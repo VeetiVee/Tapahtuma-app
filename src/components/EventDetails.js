@@ -1,14 +1,23 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
 
 const EventDetails = () => {
   const { eventId } = useParams();
 
   return (
-    <div>
-      <h1>Event Details</h1>
-      <p>Details for event ID: {eventId}</p>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: 250,
+      }}
+    >
+      <Typography variant="h4" gutterBottom>
+        Event Details
+      </Typography>
 
       {/* Link to Event-Specific Budget */}
       <Button
@@ -16,9 +25,9 @@ const EventDetails = () => {
         color="primary"
         component={Link}
         to={`/events/${eventId}/budget`}
-        style={{ marginRight: "10px" }}
+        sx={{ mb: 2, width: "200px" }}
       >
-        View Budget
+        Budget
       </Button>
 
       {/* Link to Event-Specific To-Do List */}
@@ -27,10 +36,22 @@ const EventDetails = () => {
         color="primary"
         component={Link}
         to={`/events/${eventId}/todolist`}
+        sx={{ mb: 2, width: "200px" }}
       >
-        View To-Do List
+        To-Do List
       </Button>
-    </div>
+
+      {/* Link to Event-Specific Schedule */}
+      <Button
+        variant="contained"
+        color="primary"
+        component={Link}
+        to={`/events/${eventId}/schedule`}
+        sx={{ width: "200px" }}
+      >
+        Schedule
+      </Button>
+    </Box>
   );
 };
 

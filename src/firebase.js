@@ -11,7 +11,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDA8wAxW12sjkdV3qYbUXZzhPcb_Edbecs",
   authDomain: "tapis-app.firebaseapp.com",
   projectId: "tapis-app",
-  storageBucket: "tapis-app.appspot.com",
+  storageBucket: "tapis-app.firebasestorage.app",
   messagingSenderId: "656123532823",
   appId: "1:656123532823:web:e36faaf2d317e553162e52",
   measurementId: "G-DE49K96YS5",

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import NewEvent from "./NewEvent";
 import { auth, db } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { signInAnonymously } from "firebase/auth";
 import {
   collection,
   addDoc,
@@ -11,44 +12,60 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { Button } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Box,
+  CircularProgress,
+} from "@mui/material";
 import { Link } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Myevents = () => {
   const [events, setEvents] = useState([]);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Listen for authentication state changes
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user);
-        await fetchUserEvents(user.uid); // Fetch events for the signed-in user
-      } else {
-        setUser(null);
-        setEvents([]); // Clear events if no user is signed in
-      }
-    });
+    const authenticate = async () => {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          setUser(user);
+          await fetchUserEvents(user.uid);
+        } else {
+          await signInAnonymously(auth);
+        }
+      });
+    };
+    authenticate();
   }, []);
-
-  // Fetch events from Firestore for a specific user
+  console.log(process.env.REACT_APP_API_KEY);
   const fetchUserEvents = async (uid) => {
-    const eventsRef = collection(db, "events");
-    const q = query(eventsRef, where("uid", "==", uid));
-    const querySnapshot = await getDocs(q);
+    try {
+      const eventsRef = collection(db, "events");
+      const q = query(eventsRef, where("uid", "==", uid));
+      const querySnapshot = await getDocs(q);
 
-    const userEvents = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setEvents(userEvents);
+      const userEvents = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setEvents(userEvents);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      setLoading(false);
+    }
   };
 
-  // Add a new event to Firestore for the current user
   const newEvent = async (newEvent) => {
     if (user) {
       const eventRef = await addDoc(collection(db, "events"), {
-        uid: user.uid, // Associate event with the user's UID
+        uid: user.uid,
         name: newEvent.name,
         timestamp: new Date(),
       });
@@ -56,47 +73,61 @@ const Myevents = () => {
     }
   };
 
-  // Delete an event from Firestore and update state
   const deleteEvent = async (eventId) => {
     try {
       await deleteDoc(doc(db, "events", eventId));
-      setEvents(events.filter((event) => event.id !== eventId)); // Update the state
+      setEvents(events.filter((event) => event.id !== eventId));
     } catch (error) {
       console.error("Error deleting event:", error);
     }
   };
 
   return (
-    <div>
-      <h1>My events</h1>
-      {events.length === 0 ? (
-        <p>No events yet</p>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        mt: 4,
+      }}
+    >
+      <Typography variant="h4" gutterBottom>
+        My Events
+      </Typography>
+
+      {loading ? (
+        <CircularProgress />
+      ) : events.length === 0 ? (
+        <Typography variant="body1">
+          No events yet. Add a new event below!
+        </Typography>
       ) : (
-        events.map((event) => (
-          <div key={event.id} style={{ marginBottom: "10px" }}>
-            <Button
-              key={event.id}
-              variant="contained"
-              color="primary"
-              style={{ margin: "5px" }}
-              onClick={() => console.log(`Event clicked: ${event.name}`)}
-              component={Link}
-              to={`/events/${event.id}`}
-            >
-              {event.name}
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => deleteEvent(event.id)}
-            >
-              Delete
-            </Button>
-          </div>
-        ))
+        <List sx={{ width: "100%", maxWidth: 400 }}>
+          {events.map((event) => (
+            <ListItem key={event.id} divider>
+              <ListItemText primary={event.name} />
+              <Button
+                variant="outlined"
+                color="primary"
+                component={Link}
+                to={`/events/${event.id}`}
+              >
+                View Details
+              </Button>
+              <IconButton
+                edge="end"
+                color="error"
+                onClick={() => deleteEvent(event.id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </ListItem>
+          ))}
+        </List>
       )}
+
       <NewEvent newEvent={newEvent} />
-    </div>
+    </Box>
   );
 };
 
