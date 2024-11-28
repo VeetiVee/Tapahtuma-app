@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Typography,
+  TextField,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Grid2,
+} from "@mui/material";
 import { db } from "../firebase";
 import {
   collection,
@@ -10,10 +22,11 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { useParams } from "react-router-dom"; // To get eventId from URL
+import { useParams } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Budget() {
-  const { eventId } = useParams(); // Gets eventId from the route
+  const { eventId } = useParams();
   const [incomeValue, setIncomeValue] = useState("");
   const [incomeName, setIncomeName] = useState("");
   const [expenseValue, setExpenseValue] = useState("");
@@ -21,7 +34,6 @@ function Budget() {
   const [income, setIncome] = useState([]);
   const [expense, setExpense] = useState([]);
 
-  // Fetch income and expenses for the specific eventId from Firestore
   useEffect(() => {
     const fetchData = async () => {
       const incomeQuery = query(
@@ -47,13 +59,6 @@ function Budget() {
     fetchData();
   }, [eventId]);
 
-  // Input handlers
-  const handleIncomeNameChange = (e) => setIncomeName(e.target.value);
-  const handleIncomeChange = (e) => setIncomeValue(e.target.value);
-  const handleExpenseNameChange = (e) => setExpenseName(e.target.value);
-  const handleExpenseChange = (e) => setExpenseValue(e.target.value);
-
-  // Add new income item to Firebase with eventId
   const addIncome = async () => {
     if (incomeValue && incomeName) {
       const newIncome = {
@@ -68,7 +73,6 @@ function Budget() {
     }
   };
 
-  // Add new expense item to Firebase with eventId
   const addExpense = async () => {
     if (expenseValue && expenseName) {
       const newExpense = {
@@ -95,82 +99,148 @@ function Budget() {
 
   const totalIncome = income.reduce((acc, item) => acc + item.amount, 0);
   const totalExpense = expense.reduce((acc, item) => acc + item.amount, 0);
+  const netBudget = totalIncome - totalExpense;
 
   return (
-    <div>
-      <h1>Budget for Event {eventId}:</h1>
+    <Box sx={{ padding: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Budget Overview
+      </Typography>
 
-      {/* Income Section */}
-      <h2>Income</h2>
-      <input
-        type="text"
-        placeholder="Income name"
-        value={incomeName}
-        onChange={handleIncomeNameChange}
-      />
-      <input
-        type="number"
-        placeholder="Income amount"
-        value={incomeValue}
-        onChange={handleIncomeChange}
-      />
-      <Button variant="outlined" onClick={addIncome}>
-        Add Income
-      </Button>
-      <ul>
-        {income.map((item, index) => (
-          <li key={index}>
-            {item.name}: {item.amount}€{" "}
+      <Grid2 container spacing={4}>
+        <Grid2 xs={12} md={5}>
+          <Box
+            sx={{
+              border: "1px solid #ccc",
+              padding: 2,
+              borderRadius: 1,
+              boxShadow: 3,
+            }}
+          >
+            <Typography variant="h6">Expenses</Typography>
+            <TextField
+              label="Expense Name"
+              value={expenseName}
+              onChange={(e) => setExpenseName(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Expense Amount (€)"
+              type="number"
+              value={expenseValue}
+              onChange={(e) => setExpenseValue(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
             <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => deleteIncome(item.id)}
+              variant="contained"
+              color="primary"
+              onClick={addExpense}
+              fullWidth
+              sx={{ marginTop: 2 }}
             >
-              Delete
+              Add Expense
             </Button>
-          </li>
-        ))}
-      </ul>
-      <h3>Total Income: {totalIncome}€</h3>
-
-      {/* Expense Section */}
-      <h2>Expenses</h2>
-      <input
-        type="text"
-        placeholder="Expense name"
-        value={expenseName}
-        onChange={handleExpenseNameChange}
-      />
-      <input
-        type="number"
-        placeholder="Expense amount"
-        value={expenseValue}
-        onChange={handleExpenseChange}
-      />
-      <Button variant="outlined" onClick={addExpense}>
-        Add Expense
-      </Button>
-      <ul>
-        {expense.map((item, index) => (
-          <li key={index}>
-            {item.name}: {item.amount}€
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Amount (€)</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {expense.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.amount}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        edge="end"
+                        color="error"
+                        onClick={() => deleteExpense(item.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <Typography variant="h6">
+              Total Expenses: {totalExpense}€
+            </Typography>
+          </Box>
+        </Grid2>
+        <Grid2 xs={12} md={5}>
+          <Box
+            sx={{
+              border: "1px solid #ccc",
+              padding: 2,
+              borderRadius: 1,
+              boxShadow: 3,
+            }}
+          >
+            <Typography variant="h6">Income</Typography>
+            <TextField
+              label="Income Name"
+              value={incomeName}
+              onChange={(e) => setIncomeName(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Income Amount (€)"
+              type="number"
+              value={incomeValue}
+              onChange={(e) => setIncomeValue(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
             <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => deleteExpense(item.id)}
+              variant="contained"
+              color="primary"
+              onClick={addIncome}
+              fullWidth
+              sx={{ marginTop: 2 }}
             >
-              Delete
+              Add Income
             </Button>
-          </li>
-        ))}
-      </ul>
-      <h3>Total Expenses: {totalExpense}€</h3>
-
-      {/* Net Budget Calculation */}
-      <div>
-        <h2>Net Budget: {totalIncome - totalExpense}€</h2>
-      </div>
-    </div>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Amount (€)</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {income.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.amount}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        edge="end"
+                        color="error"
+                        onClick={() => deleteIncome(item.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <Typography variant="h6">Total Income: {totalIncome}€</Typography>
+          </Box>
+        </Grid2>
+      </Grid2>
+      <Box sx={{ textAlign: "center", marginTop: 4 }}>
+        <Typography variant="h5">Net Budget: {netBudget}€</Typography>
+      </Box>
+    </Box>
   );
 }
 

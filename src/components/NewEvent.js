@@ -32,7 +32,7 @@ function NewEvent(props) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="contained" onClick={handleClickOpen}>
         New event
       </Button>
       <Dialog open={open} onClose={handleClose}>
