@@ -34,7 +34,6 @@ function Budget() {
   const [income, setIncome] = useState([]);
   const [expense, setExpense] = useState([]);
 
-  // Fetch income and expenses from Firestore
   useEffect(() => {
     const fetchData = async () => {
       const incomeQuery = query(
@@ -60,7 +59,6 @@ function Budget() {
     fetchData();
   }, [eventId]);
 
-  // Handlers for adding income and expense
   const addIncome = async () => {
     if (incomeValue && incomeName) {
       const newIncome = {
@@ -110,7 +108,6 @@ function Budget() {
       </Typography>
 
       <Grid2 container spacing={4}>
-        {/* Expenses Section */}
         <Grid2 xs={12} md={5}>
           <Box
             sx={{
@@ -176,8 +173,6 @@ function Budget() {
             </Typography>
           </Box>
         </Grid2>
-
-        {/* Income Section */}
         <Grid2 xs={12} md={5}>
           <Box
             sx={{
@@ -242,8 +237,6 @@ function Budget() {
           </Box>
         </Grid2>
       </Grid2>
-
-      {/* Net Budget Section */}
       <Box sx={{ textAlign: "center", marginTop: 4 }}>
         <Typography variant="h5">Net Budget: {netBudget}€</Typography>
       </Box>

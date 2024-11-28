@@ -31,8 +31,7 @@ function Tips() {
         <Accordion
           sx={{
             width: 1000,
-
-            color: "#000", // Text color (black)
+            color: "#000",
           }}
         >
           <AccordionSummary
@@ -41,8 +40,8 @@ function Tips() {
                 sx={{
                   transition: "transform 0.3s ease, color 0.3s ease",
                   "&:hover": {
-                    transform: "scale(1.2)", // Slightly enlarge the icon
-                    color: "#0288d1", // Change icon color on hover
+                    transform: "scale(1.2)",
+                    color: "#0288d1",
                   },
                 }}
               />
@@ -64,8 +63,8 @@ function Tips() {
                 sx={{
                   transition: "transform 0.3s ease, color 0.3s ease",
                   "&:hover": {
-                    transform: "scale(1.2)", // Slightly enlarge the icon
-                    color: "#0288d1", // Change icon color on hover
+                    transform: "scale(1.2)",
+                    color: "#0288d1",
                   },
                 }}
               />
@@ -87,8 +86,8 @@ function Tips() {
                 sx={{
                   transition: "transform 0.3s ease, color 0.3s ease",
                   "&:hover": {
-                    transform: "scale(1.2)", // Slightly enlarge the icon
-                    color: "#0288d1", // Change icon color on hover
+                    transform: "scale(1.2)",
+                    color: "#0288d1",
                   },
                 }}
               />

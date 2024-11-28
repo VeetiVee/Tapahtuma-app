@@ -19,7 +19,6 @@ const EventDetails = () => {
         Event Details
       </Typography>
 
-      {/* Link to Event-Specific Budget */}
       <Button
         variant="contained"
         color="primary"
@@ -30,7 +29,6 @@ const EventDetails = () => {
         Budget
       </Button>
 
-      {/* Link to Event-Specific To-Do List */}
       <Button
         variant="contained"
         color="primary"
@@ -41,7 +39,6 @@ const EventDetails = () => {
         To-Do List
       </Button>
 
-      {/* Link to Event-Specific Schedule */}
       <Button
         variant="contained"
         color="primary"

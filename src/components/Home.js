@@ -3,7 +3,6 @@ import { Typography, Paper, Box, Button, Grid2 } from "@mui/material";
 import { Link } from "react-router-dom";
 
 function Home() {
-  console.log(process.env.REACT_APP_API_KEY);
   return (
     <Box sx={{ p: 4 }}>
       <Paper elevation={3} sx={{ p: 4, textAlign: "center" }}>

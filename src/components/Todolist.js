@@ -31,7 +31,6 @@ function Todolist() {
   const [inputValue, setInputValue] = useState("");
   const { eventId } = useParams();
 
-  // Fetch data from Firestore on component mount
   useEffect(() => {
     const fetchData = async () => {
       const q = query(collection(db, "items"), where("eventId", "==", eventId));
@@ -44,12 +43,10 @@ function Todolist() {
     fetchData();
   }, [eventId]);
 
-  // Input change handler
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  // Add new item to the list and Firestore
   const addItem = async () => {
     if (inputValue.trim()) {
       const newItem = { text: inputValue, eventId, done: false };
@@ -59,13 +56,11 @@ function Todolist() {
     }
   };
 
-  // Delete item from the list and Firestore
   const deleteItem = async (id) => {
     await deleteDoc(doc(db, "items", id));
     setListItems(listItems.filter((item) => item.id !== id));
   };
 
-  // Toggle item completion status
   const toggleDone = async (item) => {
     const updatedItem = { ...item, done: !item.done };
     await updateDoc(doc(db, "items", item.id), updatedItem);
@@ -81,8 +76,6 @@ function Todolist() {
       <Typography variant="h4" gutterBottom>
         To-do List
       </Typography>
-
-      {/* Input Section */}
       <Box
         component={Paper}
         sx={{
@@ -103,8 +96,6 @@ function Todolist() {
           Add
         </Button>
       </Box>
-
-      {/* List Section */}
       <List>
         {listItems.map((item) => (
           <ListItem

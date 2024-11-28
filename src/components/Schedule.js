@@ -79,7 +79,6 @@ function Schedule() {
       </Typography>
 
       <Grid2 container spacing={4}>
-        {/* Left Column - Adding Schedule Form */}
         <Grid2 xs={12} md={5}>
           <Box
             sx={{
@@ -125,8 +124,6 @@ function Schedule() {
             </Button>
           </Box>
         </Grid2>
-
-        {/* Right Column - Display Schedule */}
         <Grid2 xs={12} md={7}>
           <Box
             sx={{
@@ -139,8 +136,6 @@ function Schedule() {
             <Typography variant="h6" gutterBottom>
               Event Schedule
             </Typography>
-
-            {/* Schedule Table */}
             <Table>
               <TableHead>
                 <TableRow>
